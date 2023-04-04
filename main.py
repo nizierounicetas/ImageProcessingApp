@@ -3,13 +3,19 @@ from tkinter import filedialog, font, messagebox
 from PIL import Image, ImageTk
 from functions import *
 
-class ImageApp:
+class ImageProcessingApp:
     f_types = [('PNG Images', '*.png'),
                ('JPG Images', '*.jpg *.jpeg'),
                ('GIF Images', '*.gif'),
                ('Icons', '*.ico')]
 
-    def __init__(self, master):
+    def __init__(self):
+        self.master = tk.Tk()
+        self.master.title("Image processing")
+        self.master.minsize(500, 500)
+        self.master.iconbitmap(resource_path("pics/image.ico"))
+        self.master.protocol("WM_DELETE_WINDOW", self.on_closing)
+
         self.original_image = None
         self.processed_image = None
         self.processed_image_raw = None
@@ -20,13 +26,7 @@ class ImageApp:
         self.brightness = tk.IntVar()
         self.popup_cancelled = False
 
-        self.master = master
-        self.master.title("Image processing")
-        self.master.minsize(500, 500)
-        self.master.iconbitmap(resource_path("pics/image.ico"))
-        self.master.protocol("WM_DELETE_WINDOW", self.on_closing)
-
-        menubar = tk.Menu(master, background='blue', font=font.Font(weight=font.BOLD))
+        menubar = tk.Menu(self.master, background='blue', font=font.Font(weight=font.BOLD))
 
         image_menu = tk.Menu(menubar, tearoff=0)
         image_menu.add_command(label='Open', command=self.load_image)
@@ -231,12 +231,12 @@ class ImageApp:
 
     def on_closing(self):
         if tk.messagebox.askokcancel("Exit", "Are you sure you want to exit?"):
-            root.destroy()
+            self.master.destroy()
 
+    def start(self):
+        self.master.mainloop()
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = ImageApp(root)
-    root.mainloop()
+    ImageProcessingApp().start()
 
 # pyinstaller --windowed -F --add-data "pics/image.ico;pics" --icon=pics/image.ico -d bootloader main.py --name image_processing --onefile
